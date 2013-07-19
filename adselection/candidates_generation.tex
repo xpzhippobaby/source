@@ -1,16 +1,45 @@
 \section{Retrieval}
-Besides of a collection of 0.7 billion bid phrases $P=\{p\}$ provided
-by a commercial search engine, we extract a collection of 30 million
-queries $Q=\{q\}$ from search logs. 
-We offline expand $Q$ using $P$ (i.e., for each $q\in Q$, select
-        several most related bid phrases from $P$).
-Then we build index mapping each $q$ to its resulting expansions. 
-When a query is issued by user, search engine look up the index,
-     if the given query is in that index, its expansions (related bid
-             phrases) are used to trigger ads for this query.
-We also build up an online query expansion system, so when the
-submitted query is unseen (not in $Q$), we retrieve related bid phrases for it
-through our online system. 
+\label{sec:retrieval}
+By conceptualization, we transform each short text (either a query or
+        bid phrase) into a concept-level representation. Thus, we can measure semantic similarity between two short
+texts over such representation and retrieve the most similar bid
+keywords with respect to a query as its expanding results.
+
+
+In practice, search engines offline expanded millions of historical
+queries so that when a search query is submitted, they immediately
+know its matching bid keywords if the query has appeared before (i.e.,
+        in their preprocessing results). Otherwise, conventional
+strategy is to avoid advertising for this query.
+
+
+For instance, we preprocessed 30 million query $Q=\{q\}$ with a
+keywords set consisting of 0.7 billion bid keywords $P=\{p\}$.  If we
+we compare each query $q$ with every bid keyword $p$, then the
+number of comparisons is $O(\vert{}P\vert{}\vert{}Q\vert{})$. Even
+though leveraging a map/reduce cluster, since the keywords set can not
+fit into a node's main memory, the improvement is limited.  Inverted
+index mapping from Probase concepts to bid keywords seems helpful.
+However, the unbalanced data will drastically weaken its benefits.
+Besides, efficiency issue becomes critical when the preprocessing task is
+mapping millions of queries to billions of bid keywords. Besides, the
+matching results should be updated periodically. hence a preprocessing
+task which takes tens of days will not be accepted.
+
+
+%Besides of a collection of 0.7 billion bid phrases $P=\{p\}$ provided
+%by a commercial search engine, we extract a collection of 30 million
+%queries $Q=\{q\}$ from search logs. 
+%We offline expand $Q$ using $P$ (i.e., for each $q\in Q$, select
+%        several most related bid phrases from $P$).
+%Then we build index mapping each $q$ to its resulting expansions. 
+%When a query is issued by user, search engine look up the index,
+%     if the given query is in that index, its expansions (related bid
+%             phrases) are used to trigger ads for this query.
+%We also build up an online query expansion system, so when the
+%submitted query is unseen (not in $Q$), we retrieve related bid phrases for it
+%through our online system. 
+%%%%%%%%%%%%%%%%%%%%%%%%version sep%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %By conceptualization, we model both queries and bid phrases as concept
 %vector and thus can measure similarity between short texts by
 %measuring similarity between their corresponding concept vectors with
@@ -30,21 +59,21 @@ through our online system.
 %Thus the response time must be no more than tens of
 %millisecond and the biggest challenge is efficiency.
 
-No matter a query is processed offline or online, we divide the
-retrieval procedure into two phases.
-%We propose a two phase approach to find relevant bid
-%pharases.%and our biggest challenge is scalability as the number of bid
-%phrases is on the order of a billion and the online response time must
-%be no more than hundreds of millisecond.  The two phases are as
-%follows.
-First, we find a small set of candidate bid phrases (somehow relevant) using some
+
+We propose a two phase approach to find relevant bid
+keywords for a query.  Our approach is efficient enough for offline processing
+big data within acceptable period, or even applying to online ads system.
+First, we find a small set of candidate bid keywords (somehow relevant) using some
 semantic aware index.  Second, we rank candidates by measuring their
-similarity with the given query and return the top-$K$ bid phrases.
+similarity with the given query and return the top-$K$ bid keywords as
+expanding results.
 %Candidates selection requires that our approaches should make
 %compromise between effectiveness(mainly recall) and efficiency.
-On the one hand, we want the set of candidates to be small enough so
-that computational cost for ranking is minimized.  On the other hand,
-the candidates should cover adequate relevant bid phrases.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%vertsion sep%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%On the one hand, we want the set of candidates to be small enough so
+%that computational cost for ranking is minimized.  On the other hand,
+%the candidates should cover adequate relevant bid phrases.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%version sep%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %not miss optimal bid phrases and recall
 %as many optimal ones as possible.
 % Since the first phase reduces the number of bid phrases for further
@@ -93,13 +122,13 @@ the candidates should cover adequate relevant bid phrases.
 %compromise between effectiveness(mainly recall) and efficiency.
 \subsection{Click Data based Retrieval}
 \label{sec:CSCD}
-We use click through data to help find relevant queries for a given
+We use click through data to help find candidate bid keywords for a given
 head query.  User clicks define strong associations between queries
 and URLs~\cite{fuxman:keywordgeneration}.  Candidate selection using
 click data (CSCD) is motivated by the assumption that queries leading
 to clicks on the same URLs are semantically relevant.  We obtain
 co-click data $\{(q,q',u,f)\}$ where $f$ is the number of times both
-$q$ and $q'$ lead users to click $u$.
+$q$ and $q'$ lead users to $u$.
 %We use the following rules to
 %filter out some co-click data. 
 %\begin{itemize}
@@ -107,12 +136,13 @@ $q$ and $q'$ lead users to click $u$.
 %\item $q$ and $q'$ share at least one common term
 %\item Edit similarity between $q$ and $q'$ is larger than $0.1$.
 %\end{itemize}
-We then build inverted index for the co-click data.  Given a query at
-runtime, we look it up in the index.  Assume the query exists in the
-index. For each of its co-clicked queries, we check if it is a bid
-phrase using {\it exact match}. If the query does not exist in the
-index (it is a tail query), we turn to our second approach for {\it
-  smart match}.
+We then build inverted index for the co-click data.  Given a query, we look it up in the index.  Assume the query exists in the index. For each of its co-clicked queries, we check if it is a bid
+keyword using {\it exact match} and select those which are bid
+keywords as candidates for the given query. If the query does not exist in the
+index (it is a tail query), we turn to our second candidates selection
+approach.
+%for {\it  smart match}.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%version sep%%%%%%%%%%%%%%%%%%%%%%%%5
 %As we know, the volume distribution of Web search queries follows the
 %power law\cite{spink:theirqueries}.
 %So there is no sufficient user behavior data(e.g., click data, session
@@ -131,15 +161,8 @@ index (it is a tail query), we turn to our second approach for {\it
 %Probase.
 %By regarding the concept vector as a set where one concept belongs to
 %it if the concept's corresponding coordinate is non-zero, 
-By conceptualization, we transform each short text (either a query or
-        bid phrase) into a set of concepts. 
-Thus, we measure semantic similarity between two short
-texts by measuring similarity between their corresponding concept
-sets and do not distinguish a short text from its corresponding
-concept set from now on.
-
-
-%In our approach, 
+There is no sufficient user behavior data for tail queries. Hence, we
+select candidates for them based on their conceptualization results. 
 We adopt Jaccard similarity
 (JS$(p,q)=\frac{\vert{}p\cap{}q\vert{}}{\vert{}p\cup{}q\vert{}}$) and
 set a threshold $t=0.8$ 
@@ -150,65 +173,73 @@ set a threshold $t=0.8$
 so that a bid phrases whose Jaccard
 similarity with respect to the given query is no less
 than $t$ qualifies for being the candidates of that query.
-Thus, we can formalize our task as: 
-\begin{definition}
-Given a collection of bid phrases $P$, a collection of queries $Q$, a similarity
-function ($\text{JS}(\cdot,\cdot)$), a threshold
-$t=0.8$, to find all pairs of short texts $\{(p,q)\vert p\in P,q\in Q,
-    \text{JS}(p,q)\geq t\}$ 
-\end{definition}
-A naive algorithm needs $O(\vert Q\vert\cdot\vert P\vert)$ comparisons (exactly computing Jaccard
-    similarity) where $\vert P\vert$  is of billion order in our
-setting. 
-A popular solution is to convert Jaccard similarity constraint ($\text{JS}(p,q)\geq t$) into an equivalent
-overlap constraint ($\text{O}(p,q)\geq\frac{t}{1+t}(\vert p\vert+\vert
-            q\vert)=\alpha$) and build inverted index mapping each concept $c$
-to a list of bid phrases that contain $c$. %in their corresponding concept sets. 
-%a bid phrase qualifies for being candidate of a given query if the
-%Jaccard Similarity between its concept set and the given query's
-%concept set is no less than a threshold $t=0.8$.
-%Thus, the task of selecting candidates for 30 million queries from
-%0.7 billion bid phrases is a similarity join
-%problem and we use PPJoin to find all pairs of short texts whose
-%similarities are no smaller than $t$~\cite{xiao:ppjoin}.
-% . is under the assumption that relevant search phrases are more
-% likely to share similar concept sets.  We measure similarity between
-% concept sets using Jaccard Similarity.  Jaccard Similarity between two
-% concept sets $X$ and $Y$ is defined as follow:
+
+
+On the one hand, we expect that the set of candidates to be small enough so
+that computational cost for ranking is minimized.  On the other hand,
+the candidates should cover adequate relevant bid keywords.
+
+
+%In our approach, 
+%Thus, we can formalize our task as: 
 %\begin{definition}
-%\label{def:js}
-%\begin{equation}
-%\textnormal{Jaccard
-%    Similarity}(X,Y)=\frac{\vert{}X\cap{}Y\vert{}}{\vert{}X\cup{}Y\vert{}}
-%\end{equation}
+%Given a collection of bid phrases $P$, a collection of queries $Q$, a similarity
+%function ($\text{JS}(\cdot,\cdot)$), a threshold
+%$t=0.8$, to find all pairs of short texts $\{(p,q)\vert p\in P,q\in Q,
+%    \text{JS}(p,q)\geq t\}$ 
 %\end{definition}
-%Obviously, we can't afford to apply Jaccard Similarity between the
-%given query and every bid phrase.
-%In such case, one solution is to build inverted index mapping concepts
-%to bid phrases that contain them and apply efficient large scale
-%similarity join algorithm such as PPJoin~\cite{xiao:ppjoin}.
-%In detail, 
-%and maintain a inverted index
-%mapping a concept $c$ to a list of short texts that contain $c$.  
-We scan each query $q\in Q$,
-   probing the index using every concept of $q$, and obtain
-   a set of bid phrases; merging these bid phrases together gives us
-   their actual overlap with $q$, final results
-   can be extracted by removing bid phrases whose overlap with $q$ is
-   less than $t$.
-However, some concepts contain extremely long inverted lists
-which incur significant overhead for building and accessing them.
-Moreover, according to our experiment, these popular concepts can't be
-treated as ``stop words'' and thus have to be reserved. 
-For large scale efficient similarity join, we adopt 
-%By the filtering rules of PPJoin, the number of bid phrases that
-%need verification (actually computing Jaccard Similarity) is
-%significantly reduced.
-PPJoin~\cite{xiao:ppjoin} which proposed several filtering rules 
-allowing us to scan only part of a concept's inverted list, to prune a
-considerable number of bid phrases in the inverted lists before
-actually computing Jaccard similarity.  Thus, the computaional
-effort for exactly comparison is significantly reduced.
+%A naive algorithm needs $O(\vert Q\vert\cdot\vert P\vert)$ comparisons (exactly computing Jaccard
+%    similarity) where $\vert P\vert$  is of billion order in our
+%setting. 
+%A popular solution is to convert Jaccard similarity constraint ($\text{JS}(p,q)\geq t$) into an equivalent
+%overlap constraint ($\text{O}(p,q)\geq\frac{t}{1+t}(\vert p\vert+\vert
+%            q\vert)=\alpha$) and build inverted index mapping each concept $c$
+%to a list of bid phrases that contain $c$. %in their corresponding concept sets. 
+%%a bid phrase qualifies for being candidate of a given query if the
+%%Jaccard Similarity between its concept set and the given query's
+%%concept set is no less than a threshold $t=0.8$.
+%%Thus, the task of selecting candidates for 30 million queries from
+%%0.7 billion bid phrases is a similarity join
+%%problem and we use PPJoin to find all pairs of short texts whose
+%%similarities are no smaller than $t$~\cite{xiao:ppjoin}.
+%% . is under the assumption that relevant search phrases are more
+%% likely to share similar concept sets.  We measure similarity between
+%% concept sets using Jaccard Similarity.  Jaccard Similarity between two
+%% concept sets $X$ and $Y$ is defined as follow:
+%%\begin{definition}
+%%\label{def:js}
+%%\begin{equation}
+%%\textnormal{Jaccard
+%%    Similarity}(X,Y)=\frac{\vert{}X\cap{}Y\vert{}}{\vert{}X\cup{}Y\vert{}}
+%%\end{equation}
+%%\end{definition}
+%%Obviously, we can't afford to apply Jaccard Similarity between the
+%%given query and every bid phrase.
+%%In such case, one solution is to build inverted index mapping concepts
+%%to bid phrases that contain them and apply efficient large scale
+%%similarity join algorithm such as PPJoin~\cite{xiao:ppjoin}.
+%%In detail, 
+%%and maintain a inverted index
+%%mapping a concept $c$ to a list of short texts that contain $c$.  
+%We scan each query $q\in Q$,
+%   probing the index using every concept of $q$, and obtain
+%   a set of bid phrases; merging these bid phrases together gives us
+%   their actual overlap with $q$, final results
+%   can be extracted by removing bid phrases whose overlap with $q$ is
+%   less than $t$.
+%However, some concepts contain extremely long inverted lists
+%which incur significant overhead for building and accessing them.
+%Moreover, according to our experiment, these popular concepts can't be
+%treated as ``stop words'' and thus have to be reserved. 
+%For large scale efficient similarity join, we adopt 
+%%By the filtering rules of PPJoin, the number of bid phrases that
+%%need verification (actually computing Jaccard Similarity) is
+%%significantly reduced.
+%PPJoin~\cite{xiao:ppjoin} which proposed several filtering rules 
+%allowing us to scan only part of a concept's inverted list, to prune a
+%considerable number of bid phrases in the inverted lists before
+%actually computing Jaccard similarity.  Thus, the computaional
+%effort for exactly comparison is significantly reduced.
 
 %Although we use this technique to expanded 30 million queries with
 %0.7 billion bid phrases within an acceptable period of time, these exact similarity
