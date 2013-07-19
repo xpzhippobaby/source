@@ -1,0 +1,173 @@
+\section{Introduction}
+Sponsored search displays ads that are relevant to a search query
+alongside organic search results.  It is an interplay involving search
+engines, advertisers, and users~\cite{broder:relevancefeedback}:
+Search engines hold auctions to ``sell'' phrases to advertisers.
+Advertisers bid on phrases that are representative for their ads.
+Search engines match user queries to relevant ads.  Users visit and
+interact with the ads.
+
+In reality, each ad is associated with a list of keywords.
+Advertisers bid for keywords, and also specify matching options for
+these keywords.  One option is \emph{exact match} where an ad is
+displayed only when a user query is identical to one of the bid
+keywords associated with the ad.  Another option is \emph{smart match}
+which is based on semantic relevance.
+
+Exact match targets exact traffic. However, advertisers need to
+provide a sufficient number of keywords to ensure enough traffic
+volume.  To help advertisers find relevant yet not so obvious
+keywords, much work has been devoted to the \emph{keyword suggestion
+  (generation)} technology~\cite{chen:concepthierarchy}.  On the other
+hand, in smart match, search engines perform \emph{query expansion} to
+match a user query to a large set of relevant bid phrases, which means
+it can potentially channel a large traffic volume to
+advertisers~\cite{wang:advertisementsearch}. Currently, smart match is
+the default option provided by mainstream search engines.
+
+
+
+\emph{Smart match} is challenging because of the following:
+\begin{itemize}
+\item \textbf{Search phrases are too short:} The average length of a
+  query is between 2.4 and 2.7 words~\cite{broder:webknowledge}.
+  Thus, measuring similarity based on words in the short texts is not
+  reliable.
+  % For each short text, its distribution over the vocabulary of entire
+  % corpus is extremely sparse.
+\item \textbf{Queries are flexible:} The vocabulary of bid phrases is
+  limited compared with that of user
+  queries~\cite{wang:advertisementsearch}.  Advertisers often miss
+  their potential customers because the two parties express a common
+  intent in different ways.  The problem is more serious for short
+  texts.
+\item \textbf{Serving ads is different from serving an information
+    need:} Queries are intended to lead to optimal Web search results
+  rather than optimal ads~\cite{broder:relevancefeedback}.  Search
+  users are better at expressing their information need than
+  commercial intent, which is one of the reasons why the quality of
+  organic search results is usually much better than that of
+  advertising results.
+\end{itemize}
+As a result, although search engines are able to return decent organic
+search results for almost all queries including those rare ones, only
+30\%-40\% of the queries have ad
+results~\cite{broder:sponsoredsearch}.
+
+Classical text modeling approaches are not sufficient for
+\emph{smart match}.  Approaches
+based on syntactic similarity suffer from low
+recall~\cite{wang:advertisementsearch}.  For instance, a tourist may
+phrase his/her query as ``auto rental Los Angeles''.  It is difficult
+to directly match the query to keyword ``hire car LA'' through term
+level features.  Topic
+models~\cite{blei:dirichletallocation,deerwester:semanticanalysis} are
+able to address word mismatching problems for document corpus.
+However, search phrases are too short to provide statistically
+meaningful signals for topic models.
+
+A more promising approach is to augment queries with additional
+external knowledge~\cite{broder:webknowledge}.  Broder et
+al~\cite{broder:relevancefeedback} proposed to enrich search phrases
+with contents of top-$K$ retrieved web pages.  However, enriching
+queries with organic search results will create unnecessary latency
+and is not feasible for real-time
+search~\cite{broder:sponsoredsearch}.  Other
+approaches~\cite{cui:querylogs,broder:webknowledge,fuxman:keywordgeneration}
+exploit user behavior data to capture semantic relevance between
+search phrases and bid phrases. However, they are only effective for
+popular queries, but not for \emph{tail queries} that have little or
+no historical user behavior data.  Unfortunately, \emph{tail queries},
+though individually rare, make up a significant portion of the query
+volume~\cite{broder:sponsoredsearch}.
+
+
+
+In this work, we focus on using external knowledge for query
+expansion. Although short texts such as keyword queries contain very
+little statistical information, human beings can understand short
+texts easily.  This is because knowledge in a human mind makes up for
+the sparsity of the input.  If we can provide such knowledge to
+machines then they can better understand short texts.  Gabrilovich et
+al~\cite{gabrilovich:semanticanalysis} proposed a novel approach known
+as {\em explicit semantic analysis (ESA)}, which models a short text
+by a set of Wikipedia~\cite{wiki:tool} concepts (it considers the
+title of any Wikipedia article as a Wikipedia concept).  However, ESA
+relies on the quality and coverage of the concept
+hierarchy~\cite{chen:concepthierarchy}.  The concept space of
+Wikipedia is limited (about 111,654 concepts~\cite{wu:manyconcepts}) and has a biased
+distribution.  % Thus, it may not be sensible to index corpora of
+% open-domain keywords by these concepts.
+%Besides, the transformation from bag-of-words to bag-of-concepts in their approach is via \emph{loose
+%  isA} relationships---co-occurrence of terms within the content of
+%original text snippet and terms within concepts' corresponding
+%articles, which is not reliable when the text snippet is extremely
+%short.
+Besides, the transformation from bag-of-words to bag-of-concepts in
+ESA is based on co-occurrence: A short text belongs to a concept
+(title of a Wikipedia article) if it contains a word that appears in the
+Wikipedia article.  This is clearly not a semantic approach: Most
+terms in an article do not have \emph{isA} relationships with th
+concept.  Therefore, abstracting from terms to concepts via that
+co-occurrence information is not reliable.  We regard the
+co-occurrence information used for conceptualization in their approach
+as \emph{loose isA} relationship.  For a short text, its limited
+number of terms makes the \emph{loose isA} relationship more
+vulnerable.
+
+
+In our approach, we expand a sparse, noisy and ambiguous input to a
+rich, explicit, and accurate representation via \emph{strict isA}
+relationships provided by probabilistic taxonomies such as
+Probase~\cite{wu:manyconcepts} and Yago~\cite{SuchanekKW07yago}.  Then
+we perform similarity calculation on that representation.  Our
+\emph{conceptualization} algorithm associates each search phrase with
+its relevant concepts by inferencing technique based on probabilities
+provided by knowledgebases.  We also mine frequent patterns from the
+whole corpus and filter inappropriate concepts assigned to short texts
+to avoid additional noise.
+%Note that our framework can be applied to general purpose text
+%modeling for corpus of short texts without any modifications.
+
+
+
+In summary, we make the following major contributions:
+\begin{itemize}
+\item We propose a new approach for keyword suggestion and query
+  expansion.  Our approach is much more \emph{robust} because: (1) We
+  leverage web-scale, data-driven knowledgebases, and (2) we
+  conceptualize short texts through \emph{strict isA} relationships
+  which are more reliable than through \emph{loose isA} relationships.
+\item We propose a sophisticated algorithm to conceptualize short
+  texts.  Our algorithm resolves word mismatching problem by
+  ``lifting'' the representation of short text to the concept level.
+  Besides, it mines frequent patterns to eliminate ambiguity of short
+  text.
+\item Our approach can match both head and tail queries to relevant
+  bid phrases.  This is very critical for current sponsored search
+  systems since selecting relevant ads for tail queries is the major
+  bottleneck.
+\item Our approach can scale to massive datasets.  Instead of
+  assigning a score to each bid phrase and ranking the entire corpus,
+  we leverage locality-sensitive hashing (LSH) to efficiently select a
+  small set of relevant bid phrases before ranking.  We apply our
+  approach to expand 30 million queries with 0.7 billion bid phrases
+  for a commercial search engine.
+\end{itemize}
+
+
+
+The rest of this paper is organized as follows.  We introduce the
+external resources (knowledgebases) used in our approach in Section 2.
+In Section 3, we give a brief introduction to our system architecture.
+We present our conceptualization algorithm in Section 4.  In Section
+5, we describe the process of selecting and ranking candidates to
+derive final results.  Experiments are discussed in Section 7.  We
+summarize related work in Section 8 and conclude our paper in Section
+9.
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "adselection"
+%%% End:

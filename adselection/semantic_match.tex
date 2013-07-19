@@ -1,0 +1,61 @@
+\section{Ranking Function}
+In this module, we assign semantic-matching score(SMS) to each
+candidate with respect to given query.
+Then we rank these candidates by assigned score in descending order
+and select top rank bid keywords as resulting substitution/expansion
+for given query.
+The SMS should reveal the semantic similarity between short texts.
+By filtering a large portion of bid keywords and only reserving a
+handful of high-quality candidatas which seem to be relevant to given
+query, we can compute SMS for candidates with respect to given query
+in a meticulous way while satisfing the efficiency requirement of
+online system.\\
+Firstly, we distinguish head instances from tail instances to
+re-weight concepts derived from these observed instances.
+In contrast of classic term weighting scheme such as TF-IDF which
+measures significance of a word to a certain document based on the
+frequence of the word within the content of the document as well as
+the frequency of the word in the whole corpus, we determine the
+significance of each instance according to its functionality with
+respect to expressing the meaning of the short text.
+For example, short text ``angry birds for windows phone 7'' refers to
+the ``wp7'' version of a popular game named ``angry birds''. Here
+``angry birds'' is a head instance but ``windows phone 7'' is a modifier
+instance.
+By semantically re-weight associated concepts of each short text, we
+can target the core meaning of short text more accurately.
+We present our work on distinguishing head/modifier in another
+paper.\\
+%Since taxonomy used in our approach organizes concepts hierarchically
+%by ``is-A'' relation, regarding each concept as a independent
+%coordinate and adopting conventional metrics(e.g., cosine) to measure
+%similarity between two concept vectors seems unreasonable.
+Search users with identical search intent but different extent of
+expertise may issue different queries.
+For example, customer has no idea about ``kindle'' may issue query
+``amazon ebook reader'' and ``kindle'' is more specific but still so
+relevant to his/her query.
+In order to exploit more specific or more general bid keywords to
+answer given query, we measure similarity between concept vectors with
+consideration of both their parent concepts and children concepts.
+Given a concept vector $\mathbf{x}$, we denote its corresponding
+concept set as
+$C_{\mathbf{x}}=\{(c_1,w_1),(c_2,w_2),\ldots,(c_n,w_n)\}$ where
+$\forall i\in 1,\ldots,n,w_i>0$.
+We derive parents of $C_{\mathbf{x}}$ by regarding concepts within it
+as entities and ranking their hypernyms by equation
+\ref{eqn:naivebayesian}.
+Children of $C_{\mathbf{x}}$ is derived by ranking hyponyms of its
+concepts by:
+\begin{equation}
+P(e\vert C_{\mathbf{x}})=\frac{P(e)P(C_{\mathbf{x}}\vert
+        e)}{P(C_{\mathbf{x}})}\propto P(e)\prod_{i}^{n}P(c_i\vert e)
+\end{equation}
+Then we transform parents and children of $C_{\mathbf{x}}$ into
+concept vector form and normalize them resulting
+$\mathbf{x}_{\textnormal{p}},\mathbf{x},\mathbf{x}_{\textnormal{c}}$.
+Given two concept vectors $\mathbf{x}$ and $\mathbf{y}$, we define the
+SMS of them as:
+\begin{definition}
+SMS($\mathbf{x},\mathbf{y}$)=$\max_{t\in\{\mathbf{x}_{\textnormal{p}},\mathbf{x},\mathbf{x}_{\textnormal{c}}\}\times\{\mathbf{y}_{\textnormal{p}},\mathbf{y},\mathbf{y}_{\textnormal{c}}\}}\cos(t)$
+\end{definition}

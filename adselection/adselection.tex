@@ -1,0 +1,148 @@
+\documentclass{sig-alternate}
+\usepackage{subfigure}
+\usepackage{url}
+\usepackage{multirow}
+%\usepackage{wrapfig}
+\usepackage[ruled,vlined]{algorithm2e}
+%\usepackage{algorithm}
+%\usepackage{algorithmic}
+\newdef{definition}{Definition}
+\newdef{example}{Example}
+%\newdef{balabala}{Rule}
+%\newtheorem{algorithm}{Algorithm}
+
+\usepackage[usenames]{color}
+\newcommand{\comment}[1]{{\color{Magenta}{#1}}}
+
+\begin{document}
+%
+% --- Author Metadata here ---
+\conferenceinfo{CIKM}{'13 San Francisco, CA USA}
+%\CopyrightYear{2007} % Allows default copyright year (20XX) to be over-ridden - IF NEED BE.
+%\crdata{0-12345-67-8/90/01}  % Allows default copyright data (0-89791-88-6/97/05) to be over-ridden - IF NEED BE.
+% --- End of Author Metadata ---
+
+\title{Matching Millions of Queries with Billions of Bid Keywords}
+%\titlenote{(Produces the permission block, and
+%copyright information). For use with
+%SIG-ALTERNATE.CLS. Supported by ACM.}}
+%\subtitle{[Extended Abstract]
+%\titlenote{A full version of this paper is available as
+%\textit{Author's Guide to Preparing ACM SIG Proceedings Using
+%\LaTeX$2_\epsilon$\ and BibTeX} at
+%\texttt{www.acm.org/eaddress.htm}}}
+
+%\numberofauthors{8} %  in this sample file, there are a *total*
+%\author{
+% 1st. author
+%\alignauthor
+%Ben Trovato\titlenote{Dr.~Trovato insisted his name be first.}\\
+%       \affaddr{Institute for Clarity in Documentation}\\
+%       \affaddr{1932 Wallamaloo Lane}\\
+%       \affaddr{Wallamaloo, New Zealand}\\
+%       \email{trovato@corporation.com}
+% 2nd. author
+%\alignauthor
+%G.K.M. Tobin\titlenote{The secretary disavows
+%any knowledge of this author's actions.}\\
+%       \affaddr{Institute for Clarity in Documentation}\\
+%       \affaddr{P.O. Box 1212}\\
+%       \affaddr{Dublin, Ohio 43017-6221}\\
+%       \email{webmaster@marysville-ohio.com}
+% 3rd. author
+%\alignauthor Lars Th{\o}rv{\"a}ld\titlenote{This author is the
+%one who did all the really hard work.}\\
+%       \affaddr{The Th{\o}rv{\"a}ld Group}\\
+%       \affaddr{1 Th{\o}rv{\"a}ld Circle}\\
+%       \affaddr{Hekla, Iceland}\\
+%       \email{larst@affiliation.org}
+%\and  % use '\and' if you need 'another row' of author names
+% 4th. author
+%\alignauthor Lawrence P. Leipuner\\
+%       \affaddr{Brookhaven Laboratories}\\
+%       \affaddr{Brookhaven National Lab}\\
+%       \affaddr{P.O. Box 5000}\\
+%       \email{lleipuner@researchlabs.org}
+% 5th. author
+%\alignauthor Sean Fogarty\\
+%       \affaddr{NASA Ames Research Center}\\
+%       \affaddr{Moffett Field}\\
+%       \affaddr{California 94035}\\
+%       \email{fogartys@amesres.org}
+% 6th. author
+%\alignauthor Charles Palmer\\
+%       \affaddr{Palmer Research Laboratories}\\
+%       \affaddr{8600 Datapoint Drive}\\
+%       \affaddr{San Antonio, Texas 78229}\\
+%       \email{cpalmer@prl.com}
+%}
+% There's nothing stopping you putting the seventh, eighth, etc.
+% author on the opening page (as the 'third row') but we ask,
+% for aesthetic reasons that you place these 'additional authors'
+% in the \additional authors block, viz.
+%
+%\date{30 July 1999}
+%
+% Just remember to make sure that the TOTAL number of authors
+% is the number that will appear on the first page PLUS the
+% number that will appear in the \additionalauthors section.
+
+\maketitle
+\begin{abstract}
+  Sponsored search is the main source of revenue of a search engine.
+  Advertisers bid on phrases for their advertisements, and search
+  engines match user queries to relevant ads based on the bid phrases.
+  Since both queries and bid phrases are short texts and cannot be
+  modeled by the standard bag-of-words approach, most existing
+  approaches exploit user behavior data (e.g., click-through data,
+  session data, etc.) to fill the semantic gap in matching bid phrases
+  and user queries. This approach however cannot handle tail queries
+  which do not have much user behavior data.  Although individually
+  rare, tail queries as a whole account for a considerable portion of
+  the query volume and are a significant source of search engine's
+  revenue.  In this paper, we propose a novel approach for matching
+  queries and bid phrases.  Leveraging a probabilistic taxonomy and a
+  large scale term co-occurrence network, we conceptualize a short
+  text to a set of relevant concepts.  To handle millions of queries
+  and billions of bid phrases, we create a semantic index of
+  concepts: relevant bid phrases are selected for a given query by
+  measuring their similarity in the concept space.  We conduct a
+  series of experiments including expanding 30 million queries with
+  0.7 billion phrases.  Experiment results show the effectiveness of
+  our approach.
+\end{abstract}
+
+% A category with the (minimum) three required fields
+\category{H.3.3}{Information Storage and Retrieval}{Information Search
+and Retrieval}
+%A category including the fourth, optional field follows...
+%\category{D.2.8}{Software Engineering}{Metrics}[complexity measures, performance measures]
+
+\terms{Algorithm, Experimentation}
+
+\keywords{Sponsored advertising, query expansion, keyword suggestion,
+    text modeling}
+
+\input{introduction_icde2014}
+\input{relatedwork}
+\input{external_resources}
+\input{framework}
+\input{conceptualization}
+\input{candidates_generation}
+%\input{semantic_match}
+%\input{pruning}
+\input{experiment}
+\input{conclusion}
+
+% The following two commands are all you need in the
+% initial runs of your .tex file to
+% produce the bibliography for the citations in your paper.
+\bibliographystyle{abbrv}
+\bibliography{adselection}  % sigproc.bib is the name of the Bibliography in this case
+% You must have a proper ".bib" file
+%  and remember to run:
+% latex bibtex latex latex
+% to resolve all references
+\end{document}
+
+

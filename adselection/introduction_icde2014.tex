@@ -1,0 +1,134 @@
+%Basically, our story is this:
+%
+%In sponsored search, we need to find matching bid keywords for a
+%query.
+%
+%Semantic problem: matching must be semantic, but both keywords and
+%query are short texts.
+%
+%Scalability problem: there are billions of bid keywords.
+%
+\section{introduction}
+%What's sponsored search
+Sponsored search aims at matching search queries to relevant
+advertisements.  Each ad is characterized by a list of bid keywords
+which are representative for it.  If the matching option is
+\emph{exact match}, an ad has opportunity to be triggered if the given
+query is identical to one of its bid keyword.  Another option is
+\emph{smart match} which is the default option provided by mainstream
+search engines.  In this scenario, search engines display ads whose
+bid keywords are semantically relevant to the given query.  Smart
+match can potentially channel a larger traffic volume to
+advertisers~\cite{wang:advertisementsearch}. However, in most cases,
+    this traffic is less targeted compared with exact match.  Our
+    paper deals with finding matching bid keywords for a qeury and
+    focus on the semantic relevance between sthem.
+
+
+%Semantic problem
+Both queries and bid keywords are very short (the average length is
+        between 2.4 and 2.7 words~\cite{broder:webknowledge}).  Thus
+matching based on syntactic similarity suffers from low
+recall~\cite{wang:advertisementsearch}.  As a result, only 30\%-40\%
+of search queries are covered by ad
+results~\cite{broder:sponsoredsearch}.  To address such serious word
+mismatching problem, matching must be semantic.  Topic
+models~\cite{blei:dirichletallocation, deerwester:semanticanalysis}
+express semantics as distribution over latent topics.  They are useful
+for corpus of normal documents, but queries as well as bid keywords are too short to
+provide statistically meaningful signals.  A more promising approach
+is to augment queries with additional external 
+knowledge such as user behavior data~\cite{cui:querylogs,
+    broder:webknowledge, fuxman:keywordgeneration}.  However, they are
+    only effective for popular queries, but not for \emph{tail
+        queries} that have little or no historical user behavior data.
+        Unfortunately, tail queries, though individually rare, make up
+        a significant portion of the query
+        volume~\cite{broder:sponsoredsearch}.
+
+
+No matter a query is popular or rare, human beings can understand it
+easily.  This is because knowledge in a human mind makes up for the
+sparsity of the input.  If we can provide such knowledge to machines
+         then they can better understand short texts.  Gabrilovich et
+         al~\cite{gabrilovich:semanticanalysis} proposed a novel
+         approach known as {\em explicit semantic analysis (ESA)},
+         which models a short text by a set of
+         Wikipedia~\cite{wiki:tool} concepts (it considers the title
+                 of any Wikipedia article as a Wikipedia concept).
+         However, such taxonomy-based approach relies on the quality
+         and coverage of the taxonomy~\cite{chen:concepthierarchy} and
+the concept space of Wikipedia is limited (about 111,654
+        concepts~\cite{wu:manyconcepts}).
+Besides, the transformation from bag-of-words to bag-of-concepts in
+ESA is based on co-occurrence between terms of a short text and terms
+in Wikipedia articles.  However, most terms in an article do not have
+\emph{isA} relationships with the corresponding Wikipedia concept.
+Therefore, associating short texts with their relevant concepts via
+this co-occurrence information is not precise.  We regard the
+co-occurrence information used for \emph{conceptualization} in their
+approach as \emph{loose isA} relationship.  For a short text, its limited
+number of terms makes the loose isA relationship more vulnerable.
+
+
+In our approach, we expand a sparse, noisy and ambiguous input to a
+rich, explicit, and accurate representation via \emph{strict isA}
+relationships provided by probabilistic taxonomies such as
+Probase~\cite{wu:manyconcepts} and Yago~\cite{SuchanekKW07yago}.  Then
+we perform similarity calculation on that representation. Our
+conceptualization algorithm associates each short text with
+its relevant concepts by inferencing technique based on probabilities
+provided by adopted taxonomy.  We also mine frequent sense-patterns
+from the adopted co-occurrence network and filter inappropriate
+concepts assigned to short texts to avoid additional noise. 
+
+
+%scalability problem
+Besides of semantic problem, scalability is critical for any sponsored
+search approaches. Moreover, in our approach, each short text is
+mapped into concept space and has a distributed representation.
+Thus matching between short texts over our enriched representation is
+more complicated compared with the matching between bags-of-words
+(around 2 words).  Comparing millions of queries with billions of
+keywords by a naive algorithm is intractable even in our map-reduce
+cluster. Thus, instead of assigning a score to each bid keyword
+and ranking the entire corpus, we leverage locality-sensitive hashing
+(LSH) to efficiently select a small set of relevant bid keywords
+before ranking.
+
+
+In summary, we make the following major contributions:
+\begin{itemize}
+\item We propose a new approach for query expansion.  Our approach is
+much more \emph{robust} because: (1) We leverage web-scale,
+     data-driven knowledgebases, and (2) we conceptualize short texts
+     through strict isA relationships which are more reliable than
+     through loose isA relationships.
+\item We propose a sophisticated algorithm to conceptualize short
+  texts.  Our algorithm resolves word mismatching problem by
+  ``lifting'' the representation of short text to the concept level.
+  Besides, it mines frequent sense-patterns to eliminate ambiguity of
+  short text.
+\item Our approach can match both head and tail queries to relevant
+  bid keywords.  This is very critical for current sponsored search
+  systems since selecting relevant ads for tail queries is the major
+  bottleneck.
+\item Our approach can scale to massive datasets.  
+%Instead of
+  %assigning a score to each bid phrase and ranking the entire corpus,
+  %we leverage locality-sensitive hashing (LSH) to efficiently select a
+  %small set of relevant bid phrases before ranking.  
+  We apply our
+  approach to expand 30 million queries with 0.7 billion bid keywords
+  for a commercial search engine.
+\end{itemize}
+
+
+The rest of this paper is organized as follows.  In the next section,
+    we summarize related work.  We introduce the external resources
+(knowledgebases) used in our approach in Section 3.  In Section 4, we
+give a brief introduction to our system architecture.  We present our
+conceptualization algorithm in Section 5.  In Section 6, we describe
+the process of selecting and ranking candidates to derive final
+results.  Experiments are discussed in Section 7.  We conclude our
+paper in Section 8.

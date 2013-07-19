@@ -1,0 +1,394 @@
+@inproceedings{xiao:ppjoin,
+author = {Chuan Xiao and Wei Wang and Xuemin Lin and Jeffrey Xu Yu},
+title = {{Efficient similarity joins for near duplicate detection}},
+booktitle = {WWW},
+year = {2008},
+pages = {131--140},
+doi = {10.1145/1367497.1367516},
+masid = {4117695}
+}
+
+@inproceedings{fuxman:keywordgeneration,
+author = {Ariel Fuxman and Panayiotis Tsaparas and Kannan Achan and Rakesh Agrawal},
+title = {{Using the wisdom of the crowds for keyword generation}},
+booktitle = {WWW},
+year = {2008},
+pages = {61--70},
+doi = {10.1145/1367497.1367506},
+masid = {4118039}
+}
+
+@article{deerwester:semanticanalysis,
+author = {Scott C. Deerwester and Susan T. Dumais and George W. Furnas and Thomas K. Landauer and Richard A. Harshman},
+title = {{Indexing by Latent Semantic Analysis}},
+journal = {JASIST},
+volume = {41},
+year = {1990},
+pages = {391--407},
+issue = {6},
+doi = {10.1002/(SICI)1097-4571(199009)41:6<391::AID-ASI1>3.0.CO;2-9},
+masid = {179215}
+}
+
+@article{blei:dirichletallocation,
+author = {David M. Blei and Andrew Y. Ng and Michael I. Jordan},
+title = {{Latent dirichlet allocation}},
+journal = {JMLR},
+volume = {3},
+year = {2003},
+pages = {993--1022},
+masid = {794575}
+}
+
+@inproceedings{hofmann:semanticindexing,
+ author = {Hofmann, Thomas},
+ title = {Probabilistic latent semantic indexing},
+ booktitle = {SIGIR},
+ series = {SIGIR '99},
+ year = {1999},
+ isbn = {1-58113-096-1},
+ location = {Berkeley, California, United States},
+ pages = {50--57},
+ numpages = {8},
+ url = {http://doi.acm.org/10.1145/312624.312649},
+ doi = {10.1145/312624.312649},
+ acmid = {312649},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+} 
+
+@inproceedings{beeferman:querylog,
+author = {Doug Beeferman and Adam L. Berger},
+title = {{Agglomerative clustering of a search engine query log}},
+booktitle = {KDD},
+year = {2000},
+pages = {407--416},
+doi = {10.1145/347090.347176},
+masid = {239621}
+}
+
+@inproceedings{cao:sessiondata,
+author = {Huanhuan Cao and Daxin Jiang and Jian Pei and Qi He and Zhen Liao and Enhong Chen and Hang Li},
+title = {{Context-aware query suggestion by mining click-through and session data}},
+booktitle = {KDD},
+year = {2008},
+pages = {875--883},
+doi = {10.1145/1401890.1401995},
+masid = {4296515}
+}
+
+@inproceedings{wen:searchengine,
+author = {Ji-Rong Wen and Jian-Yun Nie and Hong-Jiang Zhang},
+title = {{Clustering user queries of a search engine}},
+booktitle = {WWW},
+year = {2001},
+pages = {162--168},
+doi = {10.1145/371920.371974},
+masid = {65533}
+}
+
+@inproceedings{xu:rarequeries,
+author = {Jingfang Xu and Gu Xu},
+title = {{Learning similarity function for rare queries}},
+booktitle = {WSDM},
+year = {2011},
+pages = {615--624},
+doi = {10.1145/1935826.1935912},
+masid = {39248325}
+}
+
+@inproceedings{wang:advertisementsearch,
+author = {Haofen Wang and Yan Liang and Linyun Fu and Gui-rong Xue and Yong Yu},
+title = {{Efficient query expansion for advertisement search}},
+booktitle = {SIGIR},
+year = {2009},
+pages = {51--58},
+doi = {10.1145/1571941.1571953},
+masid = {6050773}
+}
+
+@inproceedings{broder:relevancefeedback,
+author = {Andrei Z. Broder and Peter Ciccolo and Marcus Fontoura and Evgeniy Gabrilovich and Vanja Josifovski and Lance Riedel},
+title = {{Search advertising using web relevance feedback}},
+booktitle = {CIKM},
+year = {2008},
+pages = {1013--1022},
+doi = {10.1145/1458082.1458217},
+masid = {4242974}
+}
+
+@inproceedings{broder:sponsoredsearch,
+author = {Andrei Z. Broder and Peter Ciccolo and Evgeniy Gabrilovich and Vanja Josifovski and Donald Metzler and Lance Riedel and Jeffrey Yuan},
+title = {{Online expansion of rare queries for sponsored search}},
+booktitle = {WWW},
+year = {2009},
+pages = {511--520},
+doi = {10.1145/1526709.1526778},
+masid = {4734528}
+}
+
+@inproceedings{broder:webknowledge,
+author = {Andrei Z. Broder and Marcus Fontoura and Evgeniy Gabrilovich and Amruta Joshi and Vanja Josifovski and Tong Zhang},
+title = {{Robust classification of rare queries using web knowledge}},
+booktitle = {SIGIR},
+year = {2007},
+pages = {231--238},
+doi = {10.1145/1277741.1277783},
+masid = {4117941}
+}
+    
+@inproceedings{chen:concepthierarchy,
+author = {Yifan Chen and Gui-rong Xue and Yong Yu},
+title = {{Advertising keyword suggestion based on concept hierarchy}},
+booktitle = {WSDM},
+year = {2008},
+pages = {251--260},
+doi = {10.1145/1341531.1341564},
+masid = {4343128}
+}
+
+@inproceedings{joshi:engineadvertising,
+author = {Amruta Joshi and Rajeev Motwani},
+title = {{Keyword Generation for Search Engine Advertising}},
+booktitle = {ICDM},
+year = {2006},
+pages = {490--496},
+doi = {10.1109/ICDMW.2006.104},
+masid = {2437363}
+}
+
+@inproceedings{hu:withwikipedia,
+author = {Jian Hu and Gang Wang and Frederick H. Lochovsky and Jian-tao Sun and Zheng Chen},
+title = {{Understanding user's query intent with wikipedia}},
+booktitle = {WWW},
+year = {2009},
+pages = {471--480},
+doi = {10.1145/1526709.1526773},
+masid = {4734620}
+}
+
+@inproceedings{gabrilovich:semanticanalysis,
+author = {Evgeniy Gabrilovich and Shaul Markovitch},
+title = {{Computing Semantic Relatedness Using Wikipedia-based Explicit Semantic Analysis}},
+booktitle = {IJCAI},
+year = {2007},
+pages = {1606--1611},
+masid = {2446436}
+}
+    
+@inproceedings{jones:querysubstitutions,
+author = {Rosie Jones and Benjamin Rey and Omid Madani and Wiley Greiner},
+title = {{Generating query substitutions}},
+booktitle = {WWW},
+year = {2006},
+pages = {387--396},
+doi = {10.1145/1135777.1135835},
+masid = {2164820}
+}
+
+@inproceedings{sahami:textsnippets,
+author = {Mehran Sahami and Timothy D. Heilman},
+title = {{A web-based kernel function for measuring the similarity of short text snippets}},
+booktitle = {WWW},
+year = {2006},
+pages = {377--386},
+doi = {10.1145/1135777.1135834},
+masid = {2164876}
+}
+
+@inproceedings{thomaidou:onlineadvertising,
+author = {Stamatina Thomaidou and Michalis Vazirgiannis},
+title = {{Multiword Keyword Recommendation System for Online Advertising}},
+booktitle = {ASONAM},
+year = {2011},
+doi = {10.1109/ASONAM.2011.70},
+masid = {51107862}
+}
+
+@inproceedings{cui:querylogs,
+author = {Hang Cui and Ji-Rong Wen and Jian-Yun Nie and Wei-Ying Ma},
+title = {{Probabilistic query expansion using query logs}},
+booktitle = {WWW},
+year = {2002},
+pages = {325--332},
+doi = {10.1145/511446.511489},
+masid = {489355}
+}
+
+@inproceedings{voorhees:semanticrelations,
+author = {Ellen M. Voorhees},
+title = {{Query expansion using lexical-semantic relations}},
+booktitle = {SIGIR},
+year = {1994},
+pages = {61--69},
+masid = {631143}
+}
+
+@inproceedings{qiu:queryexpansion,
+author = {Yonggang Qiu and Hans-Peter Frei},
+title = {{Concept based query expansion}},
+booktitle = {SIGIR},
+year = {1993},
+pages = {160--169},
+doi = {10.1145/160688.160713},
+masid = {170517}
+}
+
+@inproceedings{xu:documentanalysis,
+author = {Jinxi Xu and W. Bruce Croft},
+title = {{Query expansion using local and global document analysis}},
+booktitle = {SIGIR},
+year = {1996},
+pages = {4--11},
+doi = {10.1145/243199.243202},
+masid = {328253}
+}
+
+@inproceedings{wu:manyconcepts,
+  author    = {Wentao Wu and
+               Hongsong Li and
+               Haixun Wang and
+               Kenny Qili Zhu},
+  title     = {Probase: a probabilistic taxonomy for text understanding},
+  booktitle = {SIGMOD Conference},
+  year      = {2012},
+  pages     = {481-492},
+  ee        = {http://doi.acm.org/10.1145/2213836.2213891},
+  crossref  = {DBLP:conf/sigmod/2012},
+  bibsource = {DBLP, http://dblp.uni-trier.de}
+}
+
+@inproceedings{mihalcea:semanticsimilarity,
+author = {Rada Mihalcea and Courtney Corley and Carlo Strapparava},
+title = {{Corpus-based and Knowledge-based Measures of Text Semantic Similarity}},
+booktitle = {AAAI},
+year = {2006},
+masid = {2164992}
+}
+
+@inproceedings{song:probabilisticknowledgebase,
+  author    = {Yangqiu Song and
+               Haixun Wang and
+               Zhongyuan Wang and
+               Hongsong Li and
+               Weizhu Chen},
+  title     = {Short Text Conceptualization Using a Probabilistic Knowledgebase},
+  booktitle = {IJCAI},
+  year      = {2011},
+  pages     = {2330-2336},
+  ee        = {http://ijcai.org/papers11/Papers/IJCAI11-388.pdf},
+  crossref  = {DBLP:conf/ijcai/2011},
+  bibsource = {DBLP, http://dblp.uni-trier.de}
+}
+
+@article{spink:theirqueries,
+author = {Amanda Spink and Dietmar Wolfram and Major B. J. Jansen and Tefko Saracevic},
+title = {{SEARCHING THE WEB: THE PUBLIC AND THEIR QUERIES}},
+journal = {JASIST},
+volume = {52},
+year = {2001},
+pages = {226--234},
+issue = {3},
+doi = {10.1002/1097-4571(2000)9999:9999<::AID-ASI1591>3.3.CO;2-I},
+masid = {102236}
+}
+    
+@article{jansen:theweb,
+author = {Major Bernard J. Jansen and Amanda Spink and Tefko Saracevic},
+title = {{Real life, real users, and real needs: a study and analysis of user queries on the web}},
+journal = {IPM},
+volume = {36},
+year = {2000},
+pages = {207--227},
+issue = {2},
+doi = {10.1016/S0306-4573(99)00056-4},
+masid = {152193}
+}
+
+@article{carpineto:informationretrieval,
+ author = {Carpineto, Claudio and Romano, Giovanni},
+ title = {A Survey of Automatic Query Expansion in Information Retrieval},
+ journal = {ACM Comput. Surv.},
+ issue_date = {January 2012},
+ volume = {44},
+ number = {1},
+ month = jan,
+ year = {2012},
+ issn = {0360-0300},
+ pages = {1:1--1:50},
+ articleno = {1},
+ numpages = {50},
+ url = {http://doi.acm.org/10.1145/2071389.2071390},
+ doi = {10.1145/2071389.2071390},
+ acmid = {2071390},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+ keywords = {Query expansion, document ranking, pseudo-relevance feedback, query refinement, search, word associations},
+} 
+
+@BOOK{raja:massivedatasets,
+author={Anand Rajaraman, Jeffrey David Ullman},
+title={Mining of Massive Datasets},
+publisher={Cambridge University Press},
+year={2011}
+}
+
+@book{baeza2011modern,
+  title={Modern Information Retrieval: The Concepts and Technology Behind Search},
+  author={Baeza-Yates, R. and Ribeiro-Neto, B.},
+  isbn={9780321416919},
+  lccn={2010045454},
+  url={http://books.google.com.hk/books?id=HbyAAAAACAAJ},
+  year={2011},
+  publisher={Addison Wesley}
+}
+
+@book{baeza:searchengines,
+author = {Ricardo A. Baeza-yates and Carlos A. Hurtado and Marcelo Mendoza},
+title = {{Query Recommendation Using Query Logs in Search Engines}},
+booktitle = {EDBT},
+year = {2004},
+pages = {588--596},
+doi = {10.1007/978-3-540-30192-9_58},
+masid = {1824032}
+}
+
+@MISC{adword:tool,
+    TITLE = "Google AdWords Keyword Tool",
+    howpublished = {\url{https://adwords.google.com/select/KeywordToolExternal}}
+}
+
+@MISC{odp:tool,
+    TITLE = "Open Directory Project",
+    howpublished={\url{http://www.dmoz.org}}
+}
+
+@MISC{wordnet:tool,
+    TITLE = "WordNet",
+    howpublished ={\url{http://wordnetweb.princeton.edu/perl/webwn}}
+}
+
+@MISC{wiki:tool,
+    TITLE = "wikipedia",
+    howpublished = {\url{http://www.wikipedia.org}}
+}
+
+
+@inproceedings{SuchanekKW07yago,
+  author    = {Fabian M. Suchanek and
+               Gjergji Kasneci and
+               Gerhard Weikum},
+  title     = {Yago: a core of semantic knowledge},
+  booktitle = {WWW},
+  year      = {2007},
+  pages     = {697-706}
+}
+
+
+@inproceedings{Hearst92,
+  author    = {Marti A. Hearst},
+  title     = {Automatic Acquisition of Hyponyms from Large Text Corpora},
+  booktitle = {COLING},
+  year      = {1992},
+  pages     = {539-545}
+}
