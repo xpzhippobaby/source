@@ -1,30 +1,29 @@
 \section{Retrieval}
 \label{sec:retrieval}
 By conceptualization, we transform each short text (either a query or
-        bid phrase) into a concept-level representation. Thus, we can measure semantic similarity between two short
+        bid phrase) into a concept-level representation. Thus we can measure semantic similarity between short
 texts over such representation and retrieve the most similar bid
 keywords with respect to a query as its expanding results.
 
 
 In practice, search engines offline expanded millions of historical
-queries so that when a search query is submitted, they immediately
-know its matching bid keywords if the query has appeared before (i.e.,
-        in their preprocessing results). Otherwise, conventional
-strategy is to avoid advertising for this query.
+queries so that when a query is submitted, they immediately
+know its relevant bid keywords if the query has appeared before (i.e.,
+        in the preprocessing results). Otherwise, regular practice is to avoid advertising for this query.
 
 
-For instance, we preprocessed 30 million query $Q=\{q\}$ with a
-keywords set consisting of 0.7 billion bid keywords $P=\{p\}$.  If we
-we compare each query $q$ with every bid keyword $p$, then the
+To offline expand 30 million query $Q=\{q\}$ with a
+keywords set consists of 0.7 billion bid keywords $P=\{p\}$, if we
+simply compare each query $q$ with every bid keyword $b$, then the
 number of comparisons is $O(\vert{}P\vert{}\vert{}Q\vert{})$. Even
-though leveraging a map/reduce cluster, since the keywords set can not
-fit into a node's main memory, the improvement is limited.  Inverted
-index mapping from Probase concepts to bid keywords seems helpful.
-However, the unbalanced data will drastically weaken its benefits.
-Besides, efficiency issue becomes critical when the preprocessing task is
-mapping millions of queries to billions of bid keywords. Besides, the
-matching results should be updated periodically. hence a preprocessing
-task which takes tens of days will not be accepted.
+though we make use of a map/reduce cluster, since the keywords set $P$ can not
+fit into a node's main memory, the improvement is limited.  As for inverted
+index that maps Probase concepts to bid keywords, it seems helpful but
+the unbalanced data will drastically weaken its benefits.
+Unfortunately, efficiency issue becomes critical when the data set is
+of such a huge scale.  Besides, the expanding results should be
+updated periodically. hence a preprocessing procedure which takes tens
+of days will not be allowed.
 
 
 %Besides of a collection of 0.7 billion bid phrases $P=\{p\}$ provided
@@ -60,13 +59,18 @@ task which takes tens of days will not be accepted.
 %millisecond and the biggest challenge is efficiency.
 
 
-We propose a two phase approach to find relevant bid
+We propose a two phase approach to retrieve relevant bid
 keywords for a query.  Our approach is efficient enough for offline processing
-big data within acceptable period, or even applying to online ads system.
-First, we find a small set of candidate bid keywords (somehow relevant) using some
-semantic aware index.  Second, we rank candidates by measuring their
-similarity with the given query and return the top-$K$ bid keywords as
-expanding results.
+massive data sets within acceptable period, or even applying to expand
+unseen queries online.
+First, we find a small set of candidate bid keywords (somehow relevant).  Second, we rank candidates by measuring their semantic similarity with the given query and return the top-$K$ bid keywords as expanding results.
+
+
+On the one hand, we expect that the set of candidate bid keywords to be small enough so
+that computational cost for ranking them is minimized.  On the other hand,
+the candidates should cover adequate relevant bid keywords.  For
+popular queries, our candidates selection method exploit their user
+behavior data.  For tail ones, we build some semantic-aware index.
 %Candidates selection requires that our approaches should make
 %compromise between effectiveness(mainly recall) and efficiency.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%vertsion sep%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -162,22 +166,23 @@ approach.
 %By regarding the concept vector as a set where one concept belongs to
 %it if the concept's corresponding coordinate is non-zero, 
 There is no sufficient user behavior data for tail queries. Hence, we
-select candidates for them based on their conceptualization results. 
-We adopt Jaccard similarity
-(JS$(p,q)=\frac{\vert{}p\cap{}q\vert{}}{\vert{}p\cup{}q\vert{}}$) and
-set a threshold $t=0.8$ 
+select candidates for them based on their conceptualization results.
+Since each short text is associated with a set of related concepts,
+      we won't distinguish a short text with its corresponding concept
+      set from now on and make assumption that the more similar two
+      short texts are, the more similar their concept sets are.
+We adopt Jaccard similarity:
+($\text{JS}(p,q)=\frac{\vert{}p\cap{}q\vert{}}{\vert{}p\cup{}q\vert{}}$)
+    and believe that bid keywords with $\text{JS}(p,q)\geq{}t=0.8$ are
+    somehow relevant to the given query $q$ and thus 
     %between their concept sets and do not distinguish a short text
     %from its corresponding concept set in the rest of this paper now.
 %decide whether a query and a bid phrase is related.
 %We set a threshold $t=0.8$ 
-so that a bid phrases whose Jaccard
-similarity with respect to the given query is no less
-than $t$ qualifies for being the candidates of that query.
-
-
-On the one hand, we expect that the set of candidates to be small enough so
-that computational cost for ranking is minimized.  On the other hand,
-the candidates should cover adequate relevant bid keywords.
+%so that a bid phrases whose Jaccard
+%similarity with respect to the given query is no less
+%than $t$ 
+qualify for being the candidates of it.
 
 
 %In our approach, 
@@ -246,15 +251,17 @@ the candidates should cover adequate relevant bid keywords.
 %search approaches seem not efficient enough.
 %In order to make large scale similarity search efficiently,
 
-Constructing online query expansion system means for a query, we must
-select its most related bid phrases from $P$ within tens of
-millisecond.  Besides of the scalability of $P$, the not small number
-of elements of a concept set is also a challenge.  For a given query
-$q$, to efficiently select candidates $\{p\vert p\in
-P,\text{JS}(p,q)\geq t\}$, we give up those exact algorithms that have
+%Constructing online query expansion system means for a query, we must
+%select its most related bid phrases from $P$ within tens of
+%millisecond.  Besides of the scalability of $P$, the not small number
+%of elements of a concept set is also a challenge.  
+Given a query $q$, to efficiently select bid keywords
+$\{p\in{}P\vert{}\text{JS}(p,q)\geq{}t\}$, we give up those exact algorithms that have
 to merge hundreds of posting lists of inverted index and adopt
 locality-sensitive hash (LSH) which is \emph{approximate} algorithm
 for finding similar items.
+
+
     %under some distance.
 %  However, optimal solution is not as attractive as quickly
 % retrieving a set of candidates with high enough quality.  We can
@@ -267,19 +274,21 @@ for finding similar items.
 %one concept set and each row corresponds to one concept of Probase.
 %There is a $1$ in row $r$ and column $c$ when the concept of $r$ is
 %one element of concept set of $c$.
-We represent a concept set by a 0-1 vector where each component
-corresponds to one concept of Probase. 
-There is a $1$ in row $r$ when the corresponding concept of row $r$ is
-one element of the concept set.
-When we apply a minhash function $f(\cdot)$ to the 0-1 vector of a
-concept set, it applies a permuation over the rows of it.
-The minhash value of any vector (concept set) is the subscript of the
-first row in the permuted order in which the value is $1$.
-The most important property of minhash function $f(\cdot)$ is that
-\begin{equation}
-\label{eqn:minhashjs}
-\Pr[f(p)=f(q)]=\text{JS}(p,q)
-\end{equation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%version sep%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%We represent a concept set by a 0-1 vector where each component
+%corresponds to one concept of Probase. 
+%There is a $1$ in row $r$ when the corresponding concept of row $r$ is
+%one element of the concept set.
+%When we apply a minhash function $f(\cdot)$ to the 0-1 vector of a
+%concept set, it applies a permuation over the rows of it.
+%The minhash value of any vector (concept set) is the subscript of the
+%first row in the permuted order in which the value is $1$.
+%The most important property of minhash function $f(\cdot)$ is that
+%\begin{equation}
+%\label{eqn:minhashjs}
+%\Pr[f(p)=f(q)]=\text{JS}(p,q)
+%\end{equation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%version sep%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\vspace{-15pt}
 %\begin{proof}
 %Classify the rows of matrix representation into three classes:
@@ -312,18 +321,26 @@ The most important property of minhash function $f(\cdot)$ is that
 %$d(x,y)\leq d_1\rightarrow Pr[f(x)=f(y)]\geq p_1$\\
 %$d(x,y)\geq d_2\rightarrow Pr[f(x)=f(y)]\leq p_2$
 %\end{definition}
-Minhash function family $\mathcal{F}$ consists of minhash functions
-$f(\cdot)$ each manipulates concept sets with different permutation.
+A minhash function $f(\cdot)$ maps an input concept set to an integer.  The minhash function family
+$\mathcal{F}$ consists of minhash functions
+$f(\cdot)$ each manipulates concept sets with different permutation. 
+If we randomly choose one minhash function $f(\cdot)$ from
+$\mathcal{F}$, it will satisfy the following equation:
+\begin{equation}
+\label{eqn:minhash}
+\Pr[f(X)=f(Y)]=\frac{\vert\alpha\vert}{\vert\beta\vert+\vert\alpha\vert}=\text{JS}(p,q)
+\end{equation}
+As you can see, the larger Jaccard similarity between a bid phrase $p$ and the
+given query $q$, they are more likely to collide (mapped to the same value).
 %Since Jaccard Distance is defined as one minus Jaccard Similarity, we
 %can use Jaccard Similarity's minhash function family as
 %$(d_1,d_2,1-d_1,1-d_2)-sensitive$ LSH family for Jaccard Distance.
 %When $d_1<d_2$ which implies $p_1=1-d_1>p_2=1-d_2$, it will be useful
 %for similar sets are more likely to be mapped into the same buckets.
-
-
-
-To ensure acceptable precision and recall, we use the banding
-technique~\cite{raja:massivedatasets} to ``amplify'' the LSH family. By
+%%%%%%%%%%%%%%%%%%%version sep%%%%%%%%%%%%%%%%%%%%%%%%%
+To achieve satisfactory precision and recall, we use the banding
+technique~\cite{raja:massivedatasets} to ``amplify'' the gap between 
+collision probabilities of similar pairs and dissimilar pairs. By
 randomly choosing $n(n=r\ast b)$ minhash functions
 $f_{i,j}\in\mathcal{F},i=1,\ldots,r\textnormal{ and }j=1,\ldots,b$ and
 dividing them into $b$ bands each of $r$ functions, we define the
@@ -375,9 +392,9 @@ depression of efficiency.
 
 %We pre-compute LSH signatures for bid phrases' corresponding
 %concept sets and build the LSH tables.
-We pre-compute LSH signatures for $p\in P$.%bid phrases' corresponding concept
+We pre-computed LSH signatures for $p\in{}P$.%bid phrases' corresponding concept
 %sets.
-For each band, we firstly aggregate bid phrases that have identical signature.
+For each band, we firstly aggregate bid keywords that have identical signature.
 Then we maintain the index by a key-value pair memory object caching
 system where signatures are used as keys and lists of
 aggregated bid phrases are used as values.
