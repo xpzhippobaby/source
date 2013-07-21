@@ -322,13 +322,13 @@ for finding similar items.
 %$d(x,y)\geq d_2\rightarrow Pr[f(x)=f(y)]\leq p_2$
 %\end{definition}
 A minhash function $f(\cdot)$ maps an input concept set to an integer.  The minhash function family
-$\mathcal{F}$ consists of minhash functions
+$\mathcal{F}$ consists of many minhash functions
 $f(\cdot)$ each manipulates concept sets with different permutation. 
 If we randomly choose one minhash function $f(\cdot)$ from
 $\mathcal{F}$, it will satisfy the following equation:
 \begin{equation}
 \label{eqn:minhash}
-\Pr[f(X)=f(Y)]=\frac{\vert\alpha\vert}{\vert\beta\vert+\vert\alpha\vert}=\text{JS}(p,q)
+\Pr[f(p)=f(q)]=\text{JS}(p,q)
 \end{equation}
 As you can see, the larger Jaccard similarity between a bid phrase $p$ and the
 given query $q$, they are more likely to collide (mapped to the same value).
@@ -338,13 +338,16 @@ given query $q$, they are more likely to collide (mapped to the same value).
 %When $d_1<d_2$ which implies $p_1=1-d_1>p_2=1-d_2$, it will be useful
 %for similar sets are more likely to be mapped into the same buckets.
 %%%%%%%%%%%%%%%%%%%version sep%%%%%%%%%%%%%%%%%%%%%%%%%
-To achieve satisfactory precision and recall, we use the banding
+Furthermore, to achieve satisfactory precision and recall, we use the banding
 technique~\cite{raja:massivedatasets} to ``amplify'' the gap between 
-collision probabilities of similar pairs and dissimilar pairs. By
-randomly choosing $n(n=r\ast b)$ minhash functions
-$f_{i,j}\in\mathcal{F},i=1,\ldots,r\textnormal{ and }j=1,\ldots,b$ and
-dividing them into $b$ bands each of $r$ functions, we define the
-collision (i.e., with same LSH signature) of two concept sets:
+collision probabilities of similar pairs and dissimilar pairs.
+Firstly, $n=b\times{}r$ minhash functions are uniformly sampled from $\mathcal{F}$ with
+replacement. 
+%$f_{i,j}\in\mathcal{F},i=1,\ldots,r\text{ and }j=1,\ldots,b$ 
+Then we can divide them into $b$ bands each of $r$ functions 
+$\text{Band}_{i}=(f_{i,1}(\cdot),\ldots,f_{i,r}(\cdot)),i=1,\ldots,b$.
+The collision %(i.e., with same LSH signature) 
+between two concept sets is defined as follow:
 %LSH signature as follow:
 %\begin{definition}
 %$Sig(\cdot)=(B_{1}(\cdot),\ldots,B_{b}(\cdot))$ where $B_{i}(\cdot)=(f_{i,1}(\cdot),\ldots,f_{i,r}(\cdot))$
@@ -356,12 +359,12 @@ collision (i.e., with same LSH signature) of two concept sets:
 %1,\ldots,b, B_{i}(q)=B_{i}(w) \textnormal{ where }\forall i,
 %    B_{i}(q)=B_{i}(w)\Leftrightarrow\forall j\in1,\ldots,r,
 %    f_{i,j}(q)=f_{i,j}(w)$
-$\text{Sig}(p)=\text{Sig}(q)\Leftrightarrow{}\exists i\in 1,\ldots,b$ s.t. $\forall
-j\in 1,\ldots,r,f_{i,j}(p)=f_{i,j}(q)$
+$p\text{ collide }q\Leftrightarrow{}\exists{}i\in\{1,\ldots,b\}$ s.t.
+$\forall{}j\in\{1,\ldots,r\},f_{i,j}(p)=f_{i,j}(q)$
 \end{definition}
-Suppose the $\text{JS}(p,q)=d$, according to Definition \ref{def:col}, the probability of their
+Suppose $\text{JS}(p,q)=d$, according to Definition \ref{def:col}, the probability of their
 collision is $1-(1-d^r)^b$ which is a sharp S-curve (see Figure
-        \ref{fig:scurve} for example where $r=8, b=16$).  
+        \ref{fig:scurve} where $r=8, b=16$). 
 %Since we believe that
 %bid phrases whose corresponding concept sets achieve no less than 
 %$0.8$ Jaccard Similarity with respect to given query's concept set are
