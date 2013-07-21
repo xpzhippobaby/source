@@ -331,7 +331,7 @@ $\mathcal{F}$, it will satisfy the following equation:
 \Pr[f(p)=f(q)]=\text{JS}(p,q)
 \end{equation}
 As you can see, the larger Jaccard similarity between a bid phrase $p$ and the
-given query $q$, they are more likely to collide (mapped to the same value).
+given query $q$, the more likely they are to collide (mapped to the same value).
 %Since Jaccard Distance is defined as one minus Jaccard Similarity, we
 %can use Jaccard Similarity's minhash function family as
 %$(d_1,d_2,1-d_1,1-d_2)-sensitive$ LSH family for Jaccard Distance.
@@ -346,7 +346,7 @@ replacement.
 %$f_{i,j}\in\mathcal{F},i=1,\ldots,r\text{ and }j=1,\ldots,b$ 
 Then we can divide them into $b$ bands each of $r$ functions 
 $\text{Band}_{i}=(f_{i,1}(\cdot),\ldots,f_{i,r}(\cdot)),i=1,\ldots,b$.
-The collision %(i.e., with same LSH signature) 
+The collision (or say with the same signature) 
 between two concept sets is defined as follow:
 %LSH signature as follow:
 %\begin{definition}
@@ -359,7 +359,7 @@ between two concept sets is defined as follow:
 %1,\ldots,b, B_{i}(q)=B_{i}(w) \textnormal{ where }\forall i,
 %    B_{i}(q)=B_{i}(w)\Leftrightarrow\forall j\in1,\ldots,r,
 %    f_{i,j}(q)=f_{i,j}(w)$
-$p\text{ collide }q\Leftrightarrow{}\exists{}i\in\{1,\ldots,b\}$ s.t.
+$\text{Sig}(p)=\text{Sig}(q)\Leftrightarrow{}\exists{}i\in\{1,\ldots,b\}$ s.t.
 $\forall{}j\in\{1,\ldots,r\},f_{i,j}(p)=f_{i,j}(q)$
 \end{definition}
 Suppose $\text{JS}(p,q)=d$, according to Definition \ref{def:col}, the probability of their
@@ -369,13 +369,15 @@ collision is $1-(1-d^r)^b$ which is a sharp S-curve (see Figure
 %bid phrases whose corresponding concept sets achieve no less than 
 %$0.8$ Jaccard Similarity with respect to given query's concept set are
 %suitable to be candidates, 
-We should set $r$, $b$ appropriate values such that %the collision probabilities of true
-%candidates (JS$(b,q)\geq t$) near $1$.
-$\Pr[\text{Sig}(p)=\text{Sig}(q)]$ near $1$ for $(p,q)$ that satisfies
-$\text{JS}(p,q)\geq t$ while those not so similar bid phrases have low
-collision probabilities because recalled many false candidates will increase the
-computational effort (exactly computing the similarity) which means
-depression of efficiency.
+%%%%%%%%%%%%%%%%%%%version sep%%%%%%%%%%%%%%%%%%%%
+%We should set $r$, $b$ appropriate values such that %the collision probabilities of true
+%%candidates (JS$(b,q)\geq t$) near $1$.
+%$\Pr[\text{Sig}(p)=\text{Sig}(q)]$ near $1$ for $(p,q)$ that satisfies
+%$\text{JS}(p,q)\geq t$ while those not so similar bid phrases have low
+%collision probabilities because recalled many false candidates will increase the
+%computational effort (exactly computing the similarity) which means
+%depression of efficiency.
+%%%%%%%%%%%%%%%%%%%version sep%%%%%%%%%%%%%%%%%%%%
 %Considering that those with less than $0.5$ Jaccard Similarity are so
 %irrelevant,
 %Based on above consideration, we choose parameters $r=8$, $b=16$ for
@@ -395,9 +397,10 @@ depression of efficiency.
 
 %We pre-compute LSH signatures for bid phrases' corresponding
 %concept sets and build the LSH tables.
-We pre-computed LSH signatures for $p\in{}P$.%bid phrases' corresponding concept
+We pre-computed LSH signatures for all $p\in{}P$.%bid phrases' corresponding concept
 %sets.
-For each band, we firstly aggregate bid keywords that have identical signature.
+For each $\text{Band}_{i},i=1,\ldots,b$, we firstly aggregate bid
+phrases that have identical signature $\{\}$.
 Then we maintain the index by a key-value pair memory object caching
 system where signatures are used as keys and lists of
 aggregated bid phrases are used as values.
