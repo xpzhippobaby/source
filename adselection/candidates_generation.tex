@@ -168,11 +168,10 @@ approach.
 There is no sufficient user behavior data for tail queries. Hence, we
 select candidates for them based on their conceptualization results.
 Since each short text is associated with a set of related concepts,
-      we won't distinguish a short text with its corresponding concept
-      set from now on and make assumption that the more similar two
-      short texts are, the more similar their concept sets are.
-We adopt Jaccard similarity:
-($\text{JS}(p,q)=\frac{\vert{}p\cap{}q\vert{}}{\vert{}p\cup{}q\vert{}}$)
+      we make assumption that the more similar two short texts are,
+      the more similar their concept sets are and do not distinguish a
+      short text from its corresponding concept set from now on. Under
+      this assumption, we adopt Jaccard similarity ($\text{JS}(p,q)=\frac{\vert{}p\cap{}q\vert{}}{\vert{}p\cup{}q\vert{}}$)
     and believe that bid keywords with $\text{JS}(p,q)\geq{}t=0.8$ are
     somehow relevant to the given query $q$ and thus 
     %between their concept sets and do not distinguish a short text
@@ -321,9 +320,11 @@ for finding similar items.
 %$d(x,y)\leq d_1\rightarrow Pr[f(x)=f(y)]\geq p_1$\\
 %$d(x,y)\geq d_2\rightarrow Pr[f(x)=f(y)]\leq p_2$
 %\end{definition}
-A minhash function $f(\cdot)$ maps an input concept set to an integer.  The minhash function family
-$\mathcal{F}$ consists of many minhash functions
-$f(\cdot)$ each manipulates concept sets with different permutation. 
+%%%%%%%%%%%%%%%%%%%%%version sep%%%%%%%%%%%%%%%%%%%%%%%
+%A minhash function $f(\cdot)$ maps an input concept set to an integer. 
+The minhash function family $\mathcal{F}$ consists of many minhash functions
+$f(\cdot)$ each maps input concept set to an integer with different
+permutation manipulating concept sets.
 If we randomly choose one minhash function $f(\cdot)$ from
 $\mathcal{F}$, it will satisfy the following equation:
 \begin{equation}
@@ -345,9 +346,10 @@ Firstly, $n=b\times{}r$ minhash functions are uniformly sampled from $\mathcal{F
 replacement. 
 %$f_{i,j}\in\mathcal{F},i=1,\ldots,r\text{ and }j=1,\ldots,b$ 
 Then we can divide them into $b$ bands each of $r$ functions 
-$\text{Band}_{i}=(f_{i,1}(\cdot),\ldots,f_{i,r}(\cdot)),i=1,\ldots,b$.
-The collision (or say with the same signature) 
-between two concept sets is defined as follow:
+$\text{Band}_{i}(\cdot)=(f_{i,1}(\cdot),\ldots,f_{i,r}(\cdot)),i=1,\ldots,b$.
+$\text{Band}_{i}(p)=\text{Band}_{i}(q)\Leftrightarrow{}\forall{}j\in\{1,\ldots,r\}:f_{i,j}(p)=f_{i,j}(q)$.
+The collision (sharing same LSH signature) between two concept sets is
+defined to be:
 %LSH signature as follow:
 %\begin{definition}
 %$Sig(\cdot)=(B_{1}(\cdot),\ldots,B_{b}(\cdot))$ where $B_{i}(\cdot)=(f_{i,1}(\cdot),\ldots,f_{i,r}(\cdot))$
@@ -359,8 +361,8 @@ between two concept sets is defined as follow:
 %1,\ldots,b, B_{i}(q)=B_{i}(w) \textnormal{ where }\forall i,
 %    B_{i}(q)=B_{i}(w)\Leftrightarrow\forall j\in1,\ldots,r,
 %    f_{i,j}(q)=f_{i,j}(w)$
-$\text{Sig}(p)=\text{Sig}(q)\Leftrightarrow{}\exists{}i\in\{1,\ldots,b\}$ s.t.
-$\forall{}j\in\{1,\ldots,r\},f_{i,j}(p)=f_{i,j}(q)$
+$\text{Sig}(p)=\text{Sig}(q)\Leftrightarrow{}\exists{}i\in\{1,\ldots,b\}$
+s.t. $\text{Band}_{i}(p)=\text{Band}_{i}(q)$
 \end{definition}
 Suppose $\text{JS}(p,q)=d$, according to Definition \ref{def:col}, the probability of their
 collision is $1-(1-d^r)^b$ which is a sharp S-curve (see Figure
@@ -399,27 +401,36 @@ collision is $1-(1-d^r)^b$ which is a sharp S-curve (see Figure
 %concept sets and build the LSH tables.
 We pre-computed LSH signatures for all $p\in{}P$.%bid phrases' corresponding concept
 %sets.
-For each $\text{Band}_{i},i=1,\ldots,b$, we firstly aggregate bid
-phrases that have identical signature $\{\}$.
+For each $i\in\{1,\ldots,b\}$, we firstly aggregate bid
+phrases $P$ over $\text{Band}_{i}(p)$.
 Then we maintain the index by a key-value pair memory object caching
-system where signatures are used as keys and lists of
+system where the value of $\text{Band}_{i}(p)$ are used as keys and lists of
 aggregated bid phrases are used as values.
 We maintain the index of each band in one specific machine.
 %inverted index by which, given the LSH signature
 %of the given query's concept set, we can efficie-ntly retrieve bid
 %phrases whose corresponding concept sets are mapped into the same
 %buckets.
-At runtime, when a query is posed, we compute its concept set's LSH
-signature and distribute signature of each band to corresponding machine.
+At runtime, when a query $q$ is posed, we compute its concept set's LSH
+signature and distribute $\text{Band}_{i}(q),i=1,\ldots,b$ to corresponding machine
+respectively.
 %and use the signature to retrieve bid phrases through our hash tables.
-For each band, we check whether the signature of query happens to be
+For each band, we check whether $\text{Band}_{i}(q)$ happens to be
 the key of a certain key-value pair.
 If it is the case, value (i.e., list of bid phrases) of the pair is
-returned because these bid phrases have large Jaccard similarity with
-the query under some probabilistic guarantee.
-Finally, we select at most hundreds of bid phrases from results
-returned from different bands and compute exact Jaccard Similarity for
-them to select true candidates.
+considered because these bid phrases satisfies
+$\text{Sig}(p)=\text{Sig}(p)$ and thus have large Jaccard similarity with
+the $q$ under some probabilistic guarantee.
+Bid phrases in that list are calculated exact Jaccard similarity with
+respect to $q$ and we only return at most 100 true positive ones as
+well as their Jaccard similarity value.
+Finally, we merge results returned from the $b$ machines
+and rank these bid phrases by their $\text{JS}(p,q)$ in descending
+order.
+The top 100 bid phrases (if we recalled enough) are selected as
+candidates for the given $q$.
+
+
 %True positive ones are selected as candidates.
 %The disjunctive relationship between different bands enables us to
 %process each of them seperately.
