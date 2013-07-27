@@ -1,6 +1,0 @@
-latex adselection_icde2014.tex
-bibtex adselection_icde2014
-latex adselection_icde2014.tex
-latex adselection_icde2014.tex
-dvips adselection_icde2014.dvi
-ps2pdf adselection_icde2014.ps adselection_icde2014.pdf
