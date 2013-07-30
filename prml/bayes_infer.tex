@@ -1,0 +1,24 @@
+\subsubsection{Bayesian inference for the Gaussian}
+Suppose the precision matrix $\Lambda$ is known, to infer mean $\boldsymbol{\mu}$ by 
+calculating its posterior $\Pr(\boldsymbol{\mu}\vert\mathbf{X})\varpropto\Pr(\mathbf{X}\vert\boldsymbol{\mu})\Pr(\boldsymbol{\mu})$. If we choose the prior to be also Gaussian $\mathcal{N}(\boldsymbol{\mu}\vert\boldsymbol{\mu}_{0},\Lambda_{0}^{-1})$, 
+then the terms in exponent becomes $-\frac{1}{2}\{\boldsymbol{\mu}^{\mathrm{T}}\Lambda_{0}\boldsymbol{\mu}+\sum_{i=1}^{N}(\boldsymbol{\mu}-\mathbf{x}_{i})^{\mathrm{T}}\Lambda{}(\boldsymbol{\mu}-\mathbf{x}_{i}\}$.
+We can complete the square according to \eqref{eqn:expandexponent}.  The second order term of $\boldsymbol{\mu}$ is $-\frac{1}{2}\boldsymbol{\mu}^{\mathrm{T}}(\Lambda_{0}+N\Lambda)\boldsymbol{\mu}$. Thus the precision matrix $\Lambda_{N}$ of $\Pr(\boldsymbol{\mu}\vert\mathbf{X})$ is:
+\begin{equation}
+\Lambda_{N}=\Lambda_{0}+N\Lambda
+\end{equation}
+Then we check the first order term of $\boldsymbol{\mu}$ is $\boldsymbol{\mu}^{\mathrm{T}}(\Lambda_{0}\boldsymbol{\mu}_{0}+\Lambda{}\sum_{i=1}^{N}\mathbf{x}_{i})$. 
+The mean $\boldsymbol{\mu}_{N}$ of $\Pr(\boldsymbol{\mu}\vert\mathbf{X})$ is:
+\begin{equation}
+\begin{split}
+\boldsymbol{\mu}_{N}&=(\Lambda_{0}+N\Lambda)^{-1}(\Lambda_{0}\boldsymbol{\mu}_{0}+\Lambda{}\sum_{i=1}^{N}\mathbf{x}_{i})\\
+&=(\Lambda_{0}+N\Lambda)^{-1}(\Lambda_{0}\boldsymbol{\mu}_{0}+N\Lambda{}\boldsymbol{\mu}_{\text{ML}})
+\end{split}
+\end{equation}
+
+
+Suppose the mean $\mu$ is known, to infer the variance $\sigma=\frac{1}{\lambda}$ by calculating its posterior $\Pr(\lambda\vert\mathbf{X})\varpropto\Pr(\mathbf{X}\vert\lambda)\Pr(\lambda)$. 
+Firstly, let's check the likelihood function:
+\begin{equation}
+\Pr(\mathbf{X}\vert\lambda)\varpropto\lambda^{\frac{N}{2}}\exp{}\{-\frac{\lambda}{2}\sum_{i=1}^{N}(x_{i}-\mu)^2\}
+\end{equation}
+
