@@ -1,28 +1,6 @@
 \subsubsection{Bayesian inference for the Gaussian}
 (Preliminary)
 \begin{definition}
-Gamma function is defined as $\gamma(x)=\int_{0}^{\infty}t^{x-1}e^{-t}\text{d}t$\\
-which converges for $x>0$.
-\end{definition}
-\begin{conclusion}
-$\gamma$ function is the generalization of factorial for real and complex numbers.
-\begin{equation}
-\gamma(x+1)=x\gamma(x)
-\label{eqn:factorialgamma}
-\end{equation}
-\end{conclusion}
-\begin{proof}
-(Integration by parts) 
-\begin{equation}
-\begin{split}
-\gamma(x+1)&=\int_{0}^{\infty}t^{x}e^{-t}\text{d}t\\
-&=-\int_{0}^{\infty}t^{x}\frac{\text{d}e^{-t}}{\text{d}t}\text{d}t\\
-&=-t^{x}e^{-t}\vert_{0}^{\infty}+\int_{0}^{\infty}xt^{x-1}e^{-t}\text{d}t\\
-&=x\gamma(x)
-\end{split}
-\end{equation}
-\end{proof}
-\begin{definition}
 Gamma distribution is defined as:
 \begin{equation}
 \text{Gam}(x\vert{}a,b)=\frac{1}{\gamma(a)}b^{a}x^{a-1}\exp{}(-bx)
@@ -114,12 +92,10 @@ v_{N}=N+v_{0}\\
 \end{gather}
 
 
-Suppose both mean $\mu$ and variance $\sigma=\frac{1}{\lambda}$ are unknown, to calculate its posterior $\Pr(\mu,\lambda\vert\mathbf{X})$ we firstly check the form of likelihood function:
-\begin{equation}
-\begin{split}
-\Pr(\mathbf{X}\vert\mu\lambda)&=\prod_{i=1}^{N}(\frac{\lambda}{2\pi})^{\frac{1}{2}}\exp{}\{-\frac{\lambda}{2}(x_{i}-\mu)^2\}\\
-&\varpropto[\lambda^{\frac{1}{2}}\exp{}(-\frac{\lambda\mu^2}{2})]^{N}\exp{}\{-\frac{\lambda}{2}\sum_{i=1}^{N}x_{i}^{2}+\lambda\mu\sum_{i=1}^{N}x_{i}\}
-\end{split}
-\end{equation}
-
-
+%Suppose both mean $\mu$ and variance $\sigma=\frac{1}{\lambda}$ are unknown, to calculate its posterior $\Pr(\mu,\lambda\vert\mathbf{X})$ we firstly check the form of likelihood function:
+%\begin{equation}
+%\begin{split}
+%\Pr(\mathbf{X}\vert\mu\lambda)&=\prod_{i=1}^{N}(\frac{\lambda}{2\pi})^{\frac{1}{2}}\exp{}\{-\frac{\lambda}{2}(x_{i}-\mu)^2\}\\
+%&\varpropto[\lambda^{\frac{1}{2}}\exp{}(-\frac{\lambda\mu^2}{2})]^{N}\exp{}\{-\frac{\lambda}{2}\sum_{i=1}^{N}x_{i}^{2}+\lambda\mu\sum_{i=1}^{N}x_{i}\}
+%\end{split}
+%\end{equation}
